@@ -1,0 +1,67 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+interface FabricaAssinatura {
+  + criarComprovanteFiscal(): ComprovanteFiscal
+  + criarProcessadorPagamento(): ProcessadorPagamento
+  + criarTermoPrivacidade(): TermoPrivacidade
+}
+
+class FabricaBrasil
+class FabricaMexico
+
+interface ComprovanteFiscal {
+  + emitir(valor: double): String
+}
+interface ProcessadorPagamento {
+  + processar(valor: double): String
+}
+interface TermoPrivacidade {
+  + getDescricao(): String
+}
+
+class NFSe
+class CFDI
+class PagamentoPix
+class PagamentoSpei
+class TermoLgpd
+class TermoLfpdppp
+
+class Assinatura {
+  - cliente: String
+  - valor: double
+  + Assinatura(cliente: String, valor: double, fabrica: FabricaAssinatura)
+  + ativar(): void
+}
+
+class Main {
+  + main(args: String[]): void
+}
+
+FabricaBrasil ..|> FabricaAssinatura
+FabricaMexico ..|> FabricaAssinatura
+
+NFSe ..|> ComprovanteFiscal
+CFDI ..|> ComprovanteFiscal
+PagamentoPix ..|> ProcessadorPagamento
+PagamentoSpei ..|> ProcessadorPagamento
+TermoLgpd ..|> TermoPrivacidade
+TermoLfpdppp ..|> TermoPrivacidade
+
+FabricaBrasil ..> NFSe : <<create>>
+FabricaBrasil ..> PagamentoPix : <<create>>
+FabricaBrasil ..> TermoLgpd : <<create>>
+FabricaMexico ..> CFDI : <<create>>
+FabricaMexico ..> PagamentoSpei : <<create>>
+FabricaMexico ..> TermoLfpdppp : <<create>>
+
+Assinatura --> FabricaAssinatura : usa
+Assinatura o--> ComprovanteFiscal
+Assinatura o--> ProcessadorPagamento
+Assinatura o--> TermoPrivacidade
+
+Main ..> Assinatura
+Main ..> FabricaBrasil
+Main ..> FabricaMexico
+@enduml
